@@ -1,17 +1,29 @@
 import sys
+import json
 
-def hw():
-    print 'Hello, world!'
+sentimentScores = {}
 
-def lines(fp):
-    print str(len(fp.readlines()))
+def afinnSentimentBuildup():
+    afinnFile = open(sys.argv[1])
+    for line in afinnFile:
+        term, score = line.split("\t")
+        sentimentScores[term] = int(score)
+
+def rateTweet():
+    tweetFile = open(sys.argv[2])
+    for line in tweetFile:
+        tweet = json.loads(line)
+        sentimentScore = 0
+        if 'text' in tweet:
+            for word in tweet["text"].encode('utf-8').split():
+                if word in sentimentScores:
+                    sentimentScore += sentimentScores[word]
+        print sentimentScore;
 
 def main():
-    sent_file = open(sys.argv[1])
-    tweet_file = open(sys.argv[2])
-    hw()
-    lines(sent_file)
-    lines(tweet_file)
+    afinnSentimentBuildup()
+    rateTweet()
+
 
 if __name__ == '__main__':
     main()
